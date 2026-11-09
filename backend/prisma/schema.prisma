@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  email        String        @unique
+  passwordHash String?
+  avatarUrl    String?
+  authProvider AuthProvider? @default(LOCAL)
+  isVerified   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  lastLogin    DateTime?
+
+  profile          PlayerProfile?
+  userProgress     UserProgress[]
+  inventory        UserInventory[]
+  shopTransactions ShopTransaction[]
+  battlesAsP1      PvPBattle[]       @relation("PlayerOne")
+  battlesAsP2      PvPBattle[]       @relation("PlayerTwo")
+  battlesWon       PvPBattle[]       @relation("BattleWinner")
+  achievements     UserAchievement[]
+  codexEntries     CodexEntry[]
+  friendsAssoc     Friend[]          @relation("UserFriends")
+  friendsOf        Friend[]          @relation("FriendUsers")
+  refreshTokens    RefreshToken[]
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  GITHUB
+}
+
+model PlayerProfile {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName   String?
+  level         Int       @default(1)
+  xp            Int       @default(0)
+  xpToNextLevel Int       @default(550)
+  coins         Int       @default(100)
+  rank          RankTier  @default(BRONZE)
+  title         String?
+  equippedItems Json?
+  totalBattles  Int       @default(0)
+  battlesWon    Int       @default(0)
+  battlesLost   Int       @default(0)
+  streakDays    Int       @default(0)
+  lastActive    DateTime?
+}
+
+enum RankTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+  ABYSS
+}
+
+model Question {
+  id             String     @id @default(uuid())
+  title          String
+  slug           String     @unique
+  topic          String
+  stateNumber    Int
+  questionNumber Int
+  difficulty     Difficulty
+  narrative      String?
+  problemBody    String
+  baseCode       Json?
+  testCases      Json?
+  enemyId        String?
+  enemy          Enemy?     @relation(fields: [enemyId], references: [id])
+  xpReward       Int
+  coinReward     Int
+  itemDropChance Float
+  createdAt      DateTime   @default(now())
+
+  userProgress UserProgress[]
+  pvpBattles   PvPBattle[]
+}
+
+enum Difficulty {
+  EASY
+  EASY_MEDIUM
+  MEDIUM
+  MEDIUM_HARD
+  HARD
+}
+
+model Enemy {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  topic       String
+  tier        EnemyTier
+  baseHp      Int
+  baseAttack  Int
+  spriteUrl   String?
+  battleCry   String?
+  description String?
+  lore        String?
+  createdAt   DateTime  @default(now())
+
+  questions    Question[]
+  codexEntries CodexEntry[]
+}
+
+enum EnemyTier {
+  GREEN
+  YELLOW
+  BLUE
+  PURPLE
+  RED
+  GREY
+  BROWN
+  CYAN
+  FINAL
+}
+
+model UserProgress {
+  id             String         @id @default(uuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  status         ProgressStatus @default(UNSOLVED)
+  attempts       Int            @default(0)
+  bestScore      Float?
+  bestSubmission String?
+  solvedAt       DateTime?
+  timeTakenSecs  Int?
+
+  @@unique([userId, questionId])
+}
+
+enum ProgressStatus {
+  UNSOLVED
+  ATTEMPTED
+  SOLVED
+}
+
+model Item {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  type        ItemType
+  rarity      ItemRarity
+  description String?
+  effect      Json?
+  iconUrl     String?
+  shopPrice   Int?
+  dropWeight  Int?
+  createdAt   DateTime   @default(now())
+
+  inventory    UserInventory[]
+  transactions ShopTransaction[]
+  achievements Achievement[]
+}
+
+enum ItemType {
+  CONSUMABLE
+  BOOST
+  PASSIVE
+  COSMETIC
+}
+
+enum ItemRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model UserInventory {
+  id         String      @id @default(uuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  quantity   Int         @default(1)
+  acquiredAt DateTime    @default(now())
+  source     ItemSource?
+}
+
+enum ItemSource {
+  DROP
+  SHOP
+  PVP_REWARD
+  ACHIEVEMENT
+}
+
+model ShopTransaction {
+  id              String          @id @default(uuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId          String?
+  item            Item?           @relation(fields: [itemId], references: [id])
+  coinsSpent      Int
+  transactionType TransactionType @default(PURCHASE)
+  createdAt       DateTime        @default(now())
+}
+
+enum TransactionType {
+  PURCHASE
+  REGION_UNLOCK
+}
+
+model PvPBattle {
+  id           String       @id @default(uuid())
+  playerOneId  String
+  playerOne    User         @relation("PlayerOne", fields: [playerOneId], references: [id], onDelete: Cascade)
+  playerTwoId  String?
+  playerTwo    User?        @relation("PlayerTwo", fields: [playerTwoId], references: [id], onDelete: SetNull)
+  questionId   String
+  question     Question     @relation(fields: [questionId], references: [id])
+  status       BattleStatus @default(PENDING)
+  winnerId     String?
+  winner       User?        @relation("BattleWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+  p1Score      Float?
+  p2Score      Float?
+  p1TimeSecs   Int?
+  p2TimeSecs   Int?
+  coinsWagered Int          @default(0)
+  startedAt    DateTime?
+  endedAt      DateTime?
+}
+
+enum BattleStatus {
+  PENDING
+  ACTIVE
+  COMPLETE
+  ABANDONED
+}
+
+model Achievement {
+  id           String  @id @default(uuid())
+  slug         String  @unique
+  name         String
+  description  String?
+  iconUrl      String?
+  rewardCoins  Int     @default(0)
+  rewardItemId String?
+  rewardItem   Item?   @relation(fields: [rewardItemId], references: [id])
+
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+model CodexEntry {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enemyId       String
+  enemy         Enemy     @relation(fields: [enemyId], references: [id], onDelete: Cascade)
+  encounteredAt DateTime  @default(now())
+  defeatedAt    DateTime?
+
+  @@unique([userId, enemyId])
+}
+
+model Friend {
+  id         String       @id @default(uuid())
+  userId     String
+  user       User         @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
+  friendId   String
+  friendUser User         @relation("FriendUsers", fields: [friendId], references: [id], onDelete: Cascade)
+  status     FriendStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+
+  @@unique([userId, friendId])
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+model RefreshToken {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String
+  deviceLabel String?
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+}

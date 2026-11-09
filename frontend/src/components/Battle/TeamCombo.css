@@ -1,0 +1,88 @@
+.combo-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.combo-overlay.combo-win {
+  background: rgba(250, 255, 0, 0.08);
+}
+
+.combo-overlay.combo-lose {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.combo-bg-burst {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.combo-overlay.combo-win .combo-bg-burst {
+  background: radial-gradient(circle, rgba(250, 255, 0, 0.5) 0%, transparent 70%);
+}
+
+.combo-overlay.combo-lose .combo-bg-burst {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.5) 0%, transparent 70%);
+}
+
+.combo-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.combo-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-shadow: 6px 6px 0 #000;
+}
+
+.combo-overlay.combo-win .combo-label {
+  color: #FAFF00;
+}
+
+.combo-overlay.combo-lose .combo-label {
+  color: #ef4444;
+}
+
+.combo-sub {
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 12px;
+}
+
+.combo-overlay.combo-win .combo-sub {
+  color: #fff;
+}
+
+.combo-overlay.combo-lose .combo-sub {
+  color: #fca5a5;
+}
+
+.combo-stars {
+  font-size: 2rem;
+  color: #FAFF00;
+  margin-top: 16px;
+  letter-spacing: 12px;
+  animation: star-burst 0.4s ease-out;
+}
+
+@keyframes star-burst {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); }
+}

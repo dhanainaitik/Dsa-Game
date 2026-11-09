@@ -1,0 +1,156 @@
+/* ─── BattleTokenCounter ─────────────────────────────────────────────────── */
+
+.btc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #111111;
+  border: 2px solid #222222;
+  box-shadow: 6px 6px 0 #000000;
+  padding: 18px 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top accent stripe */
+.btc-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: #f97316;
+  transition: background 0.3s;
+}
+
+.btc-container.fully-charged {
+  border-color: rgba(250, 255, 0, 0.35);
+  box-shadow: 6px 6px 0 rgba(250, 255, 0, 0.15);
+  background: linear-gradient(135deg, #111111 0%, #141400 100%);
+}
+
+.btc-container.fully-charged::before {
+  background: #FAFF00;
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+.btc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btc-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #555555;
+}
+
+.btc-icon {
+  color: #f97316;
+  transition: color 0.3s;
+}
+
+.btc-container.fully-charged .btc-icon {
+  color: #FAFF00;
+}
+
+.btc-count {
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.btc-current {
+  color: #ffffff;
+}
+
+.btc-max {
+  color: #444444;
+  font-size: 0.8rem;
+}
+
+/* ─── Pips ────────────────────────────────────────────────────────────────── */
+.btc-pips-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.btc-pip {
+  position: relative;
+  height: 22px;
+  border: 2px solid #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.btc-pip.empty {
+  background: #0d0d0d;
+  border-color: #1e1e1e;
+}
+
+.btc-pip.filled {
+  background: #FAFF00;
+  border-color: rgba(250, 255, 0, 0.5);
+  box-shadow: 0 0 10px rgba(250, 255, 0, 0.25), inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+.btc-container.fully-charged .btc-pip.filled {
+  background: #FAFF00;
+  box-shadow: 0 0 14px rgba(250, 255, 0, 0.45), inset 0 0 8px rgba(255, 255, 255, 0.25);
+  animation: pip-charged-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pip-charged-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(250, 255, 0, 0.35), inset 0 0 6px rgba(255, 255, 255, 0.2); }
+  50%       { box-shadow: 0 0 20px rgba(250, 255, 0, 0.6),  inset 0 0 10px rgba(255, 255, 255, 0.3); }
+}
+
+.btc-pip-inner {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ─── Status line ─────────────────────────────────────────────────────────── */
+.btc-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.55rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.btc-status-unlocked {
+  color: #22c55e;
+}
+
+.btc-status-locked {
+  color: #444444;
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+.btc-container.size-sm {
+  padding: 10px 14px;
+  gap: 8px;
+}
+
+.btc-container.size-sm .btc-pip {
+  height: 14px;
+}
+
+.btc-container.size-sm .btc-status {
+  font-size: 0.48rem;
+}

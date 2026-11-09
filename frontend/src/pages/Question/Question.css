@@ -1,0 +1,528 @@
+/* Question page — full screen layout */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+.question-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #FCF6E5;
+  color: #000;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ==========================================
+   BATTLE ARENA (TOP)
+   ========================================== */
+.battle-arena {
+  flex-shrink: 0;
+  height: 320px;
+  background: #C4EFA7; /* Green ground base */
+  border-bottom: 6px solid #000;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Retro sky/ground split */
+.battle-arena::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 55%;
+  background: #E8F4D0; /* lighter sky */
+  border-bottom: 4px solid #95CE71; /* ground horizon line */
+  z-index: 0;
+}
+
+.brutalist-back-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  background: #fff;
+  border: 3px solid #000;
+  padding: 6px 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+.brutalist-back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+.battle-ground {
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Entities */
+.battle-entity {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.enemy-side {
+  top: 20px;
+  right: 20px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.player-side {
+  bottom: -10px;
+  left: 20px;
+  align-items: flex-end;
+}
+
+/* Sprites */
+.battle-sprite-container {
+  position: relative;
+  z-index: 2;
+}
+
+.enemy-sprite img {
+  width: 180px;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 15px 10px rgba(0,0,0,0.3));
+}
+
+.player-sprite {
+  transform: scaleX(-1); /* flip player so it faces right if asset faces left */
+}
+
+.player-sprite img {
+  width: 260px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* HUD boxes */
+.battle-hud {
+  background: #FFFAE6;
+  border: 4px solid #000;
+  border-radius: 8px;
+  border-bottom-right-radius: 20px;
+  padding: 10px 16px 12px;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+  min-width: 260px;
+  z-index: 3;
+}
+
+.player-hud {
+  margin-bottom: 40px;
+}
+.enemy-hud {
+  margin-right: 180px;
+}
+
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+
+.hud-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hud-level {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.hud-hp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.hp-label {
+  font-family: 'Anton', sans-serif;
+  color: #F87171; /* red HP text like retro RPGs */
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.hp-bar-wrap {
+  flex: 1;
+  height: 12px;
+  background: #555;
+  border: 2px solid #000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hp-bar {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.hud-hp-text {
+  text-align: right;
+  font-weight: 800;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.hud-exp-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.exp-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #FACC15;
+}
+.exp-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid #000;
+}
+.exp-bar {
+  height: 100%;
+  background: #3B82F6;
+}
+
+/* Floating combat text */
+.combat-float {
+  position: absolute;
+  font-family: 'Anton', sans-serif;
+  font-size: 2rem;
+  color: #EF4444;
+  text-shadow: 2px 2px 0 #000;
+  -webkit-text-stroke: 1px #000;
+  z-index: 10;
+  pointer-events: none;
+}
+.combat-float.damage {
+  top: -20px; left: 50%;
+}
+.combat-float.attack {
+  top: 50%; left: -50px;
+  color: #FACC15;
+}
+
+/* ==========================================
+   QUESTION / EDITOR (BOTTOM)
+   ========================================== */
+.question-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: #FCF6E5;
+}
+
+.question-left {
+  width: 40%;
+  min-width: 350px;
+  border-right: 4px solid #000;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.question-desc-scroll {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.target-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #F59E0B;
+  border: 2px solid #F59E0B;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.mission-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 3px solid #000;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  box-shadow: 3px 3px 0 #000;
+  margin-bottom: 16px;
+}
+.badge-easy { background: #34D399; }
+.badge-medium { background: #FACC15; }
+.badge-hard { background: #F87171; }
+
+.mission-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 500;
+  color: #333;
+}
+
+.section-label {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Examples block */
+.examples-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.example-block {
+  border: 3px solid #000;
+  background: #fff;
+  padding: 16px;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.example-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.example-row:last-child {
+  margin-bottom: 0;
+}
+.example-label {
+  font-weight: 700;
+  width: 60px;
+}
+
+/* ==========================================
+   EDITOR PANEL
+   ========================================== */
+.question-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 4px solid #000;
+  background: #FCF6E5;
+}
+
+.editor-toolbar-left, .editor-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editor-toolbar-left .section-label {
+  margin: 0;
+  font-size: 1rem;
+  border: 2px solid #000;
+  padding: 4px 8px;
+  background: #fff;
+}
+
+.comic-select {
+  border: 3px solid #000;
+  padding: 6px 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+}
+
+/* Editor buttons */
+.btn-brutalist {
+  border: 3px solid #000;
+  padding: 8px 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 3px 3px 0 #000;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-brutalist:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+}
+.btn-brutalist.primary {
+  background: #FFD600;
+}
+
+.editor-body {
+  flex: 1;
+  overflow: auto;
+}
+.editor-body .cm-editor {
+  height: 100%;
+}
+
+/* ==========================================
+   TEST CASES PANEL
+   ========================================== */
+.testcase-panel {
+  border-top: 4px solid #000;
+  background: #FCF6E5;
+  display: flex;
+  flex-direction: column;
+}
+
+.testcase-panel-header {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #000;
+  cursor: pointer;
+}
+.testcase-panel-header .section-label {
+  margin: 0;
+  background: #fff;
+  border: 2px solid #000;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.testcase-panel-body {
+  padding: 16px 20px;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tc-empty {
+  font-weight: 600;
+  color: #555;
+  font-style: italic;
+}
+
+.tc-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  padding: 8px 0;
+  border-bottom: 1px dashed #aaa;
+}
+.tc-item:last-child {
+  border-bottom: none;
+}
+.tc-item-num {
+  font-weight: 700;
+}
+
+/* Result rows */
+.tc-result {
+  border: 3px solid #000;
+  background: #fff;
+  padding: 12px;
+}
+.tc-result.pass { border-color: #22C55E; box-shadow: 4px 4px 0 rgba(34, 197, 94, 0.2); }
+.tc-result.fail { border-color: #EF4444; box-shadow: 4px 4px 0 rgba(239, 68, 68, 0.2); }
+
+.tc-result-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tc-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: monospace;
+  margin-bottom: 4px;
+}
+.tc-label {
+  font-weight: 700;
+  width: 70px;
+}
+.tc-value.correct { color: #22C55E; font-weight: 700; }
+.tc-value.wrong { color: #EF4444; font-weight: 700; }
+
+.submit-banner {
+  border: 4px solid #000;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+}
+.submit-banner.pass {
+  background: #E8F4D0;
+  border-color: #22C55E;
+}
+.submit-banner.fail {
+  background: #FEE2E2;
+  border-color: #EF4444;
+}
+.submit-banner-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+/* Animation utilities */
+.animate-fadeIn { animation: fadeIn 0.3s ease; }
+.animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }

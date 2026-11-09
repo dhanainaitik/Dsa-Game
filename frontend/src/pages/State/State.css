@@ -1,0 +1,151 @@
+.state-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.state-bg-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.state-page .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Breadcrumbs */
+.state-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+
+.breadcrumb-sep {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.breadcrumb-current {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 7px 14px;
+}
+
+/* Header */
+.state-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.state-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.state-header-progress {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.state-pct {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.state-pct-denom {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* Complete banner */
+.state-complete-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--success-bg);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--success);
+  margin-bottom: 24px;
+}
+
+/* Problem list */
+.problem-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.problem-row {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.problem-solved {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.03);
+}
+
+.problem-row-number {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 28px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.problem-row-status {
+  flex-shrink: 0;
+}
+
+.problem-row-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.problem-row-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.problem-row-hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.problem-row-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}

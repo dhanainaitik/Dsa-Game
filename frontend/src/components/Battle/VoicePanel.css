@@ -1,0 +1,164 @@
+.voice-panel {
+  background: #0a0a0a;
+  border-top: 3px solid #000;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  min-height: 56px;
+  position: relative;
+}
+
+.voice-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #888;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  padding-right: 12px;
+  border-right: 2px solid #222;
+}
+
+.voice-join-btn {
+  background: #FAFF00;
+  color: #000;
+  border: 2px solid #000;
+  font-weight: 900;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.voice-join-btn:hover {
+  box-shadow: 2px 2px 0 #fff;
+}
+
+.voice-error-badge {
+  background: #ff3333;
+  color: #fff;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  text-transform: uppercase;
+}
+
+.voice-players {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  overflow-x: auto;
+}
+
+.voice-player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #111;
+  border: 2px solid #222;
+  padding: 4px 10px;
+  border-radius: 0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.voice-player.team-a {
+  border-left: 3px solid #FAFF00;
+}
+
+.voice-player.team-b {
+  border-left: 3px solid #f97316;
+}
+
+.voice-player.speaking {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+.voice-avatar {
+  width: 28px;
+  height: 28px;
+  background: #222;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: #fff;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.voice-avatar.pulse {
+  animation: voice-pulse 0.8s ease-in-out infinite;
+  border-color: #22c55e;
+  background: #052e16;
+}
+
+@keyframes voice-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
+}
+
+.voice-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.voice-username {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.voice-team-badge {
+  font-size: 0.5rem;
+  font-weight: 900;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.voice-mic-icon {
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.voice-mute-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 2px solid #333;
+  color: #aaa;
+  font-family: inherit;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.voice-mute-btn:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.voice-mute-btn.muted {
+  border-color: #ef4444;
+  color: #ef4444;
+}

@@ -1,0 +1,141 @@
+.region-portal {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Outer Energy Pulse */
+.portal-energy-ring {
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-subtle);
+  background: radial-gradient(circle, var(--accent-subtle) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Layered Structural Rings */
+.portal-rings {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.ring-outer {
+  position: absolute;
+  inset: 0;
+  border: 3px solid #000;
+  border-radius: 50% 45% 55% 50% / 50% 55% 45% 50%;
+  background: #fff;
+  box-shadow: 4px 4px 0px #000, inset 0 0 15px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ring-inner {
+  position: absolute;
+  inset: 12px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Glass Core Surface */
+.portal-core {
+  position: absolute;
+  inset: 18px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  overflow: hidden;
+}
+
+/* Terrain Texture Overlay */
+.portal-core::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 8px 8px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.portal-icon {
+  position: relative;
+  z-index: 4;
+  font-size: 1.75rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px var(--region-glow));
+  transition: transform 0.3s;
+}
+
+/* Progress Indicator Ring */
+.portal-progress {
+  position: absolute;
+  inset: -4px;
+  transform: rotate(-90deg);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.portal-progress circle {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+/* Hover States */
+.region-portal:hover .ring-outer {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 8px 8px 0px #000;
+}
+
+.region-portal:hover .portal-icon {
+  transform: scale(1.1);
+}
+
+.region-portal:hover .portal-energy-ring {
+  background: radial-gradient(circle, var(--accent-subtle) 10%, transparent 80%);
+}
+
+.region-portal.locked {
+  filter: grayscale(0.8) contrast(0.9);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.region-portal.locked .portal-energy-ring {
+  display: none;
+}
+
+.region-portal.locked .ring-outer {
+  background: #e5e5e5;
+  border-style: dashed;
+}
+
+/* Animation utilities */
+.portal-ripple {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}

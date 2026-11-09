@@ -1,0 +1,117 @@
+.logic-lab-home .page-content {
+  max-width: 1100px;
+}
+
+.lab-home-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.lab-home-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--bg-surface);
+  border: 4px solid #000;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 4px 4px 0px #000;
+}
+
+/* Step flow strip */
+.lab-flow-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 24px;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 4px;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
+}
+
+.lab-flow-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.lab-flow-num {
+  width: 28px;
+  height: 28px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.lab-flow-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.lab-flow-arrow {
+  padding: 0 16px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* Topics grid */
+.lab-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.lab-topic-card {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-width: 3px;
+}
+
+.lab-topic-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  box-shadow: 3px 3px 0px #000;
+}
+
+.lab-topic-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.lab-topic-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lab-topic-tagline {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}

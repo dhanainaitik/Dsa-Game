@@ -1,0 +1,11 @@
+{
+  "name": "dsa-game",
+  "version": "1.0.0",
+  "description": "Codochamp / Codo-Lvling DSA Game",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}
+

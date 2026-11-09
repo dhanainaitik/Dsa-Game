@@ -1,0 +1,362 @@
+/* =====================================================
+   POST DETAIL PAGE STYLES
+   ===================================================== */
+
+.pd-page {
+  min-height: 100vh;
+  background: var(--bg-base);
+}
+
+.pd-container {
+  padding-top: 32px;
+  padding-bottom: 60px;
+}
+
+/* Breadcrumb */
+.pd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pd-back-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  border: 2px solid #000;
+  padding: 4px 12px;
+  background: #fff;
+  transition: all 0.1s;
+  box-shadow: 2px 2px 0 #FFD600;
+}
+
+.pd-back-link:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #FFD600;
+  text-decoration: none;
+}
+
+.pd-breadcrumb-sep {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.pd-breadcrumb-type {
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* Layout */
+.pd-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .pd-layout { grid-template-columns: 1fr; }
+  .pd-sidebar { display: none; }
+}
+
+/* Post card */
+.pd-post-card {
+  background: #fff;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 #FFD600;
+  margin-bottom: 24px;
+}
+
+.pd-post-inner {
+  display: flex;
+}
+
+.pd-vote-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 14px;
+  background: var(--bg-base);
+  border-right: 3px solid #000;
+  min-width: 58px;
+}
+
+.pd-content {
+  flex: 1;
+  padding: 24px 28px;
+  min-width: 0;
+}
+
+.pd-post-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.pd-type-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pd-owner-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pd-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: 2px solid #000;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  transition: all 0.1s;
+  background: #fff;
+}
+
+.pd-action-btn.edit:hover {
+  background: #FFD600;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.pd-action-btn.delete {
+  color: #DC2626;
+  border-color: #DC2626;
+}
+
+.pd-action-btn.delete:hover {
+  background: #DC2626;
+  color: #fff;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.pd-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  font-family: 'Space Grotesk', sans-serif;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  color: #000;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.pd-author-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.pd-author-avatar {
+  width: 40px;
+  height: 40px;
+  background: #FFD600;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  flex-shrink: 0;
+}
+
+.pd-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-author-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #000;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pd-author-level {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pd-author-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #FF4500;
+  letter-spacing: 0.05em;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pd-post-meta {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.pd-divider {
+  border: none;
+  border-top: 2px solid #000;
+  margin: 0 0 20px;
+}
+
+.pd-body {
+  margin-bottom: 20px;
+}
+
+.pd-body-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: pre-wrap;
+}
+
+.pd-code-section {
+  margin-top: 8px;
+}
+
+.pd-code-label {
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #000;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  background: #000;
+  color: #FFD600;
+  display: inline-block;
+}
+
+.pd-edited-note {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Comments section */
+.pd-comments-section {
+  margin-top: 0;
+}
+
+/* Skeleton loader */
+.pd-skeleton {
+  height: 400px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border: 3px solid #000;
+}
+
+/* Sticky sidebar */
+.pd-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-h) + 24px);
+}
+
+.pd-sidebar-card {
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 5px 5px 0 #FFD600;
+  padding: 18px;
+}
+
+.pd-sidebar-title {
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: 'Space Grotesk', sans-serif;
+  border-bottom: 2px solid #000;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.pd-sidebar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pd-sidebar-row:last-child { border-bottom: none; }
+
+.pd-sidebar-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pd-sidebar-val {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.pd-sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid #000;
+}
+
+/* Reuse from Community.css shared */
+.post-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border: 2px solid;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: 2px;
+}
+
+.post-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+}

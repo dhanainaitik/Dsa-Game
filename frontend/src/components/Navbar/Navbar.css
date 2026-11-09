@@ -1,0 +1,149 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: #fff;
+  border-bottom: 4px solid #000;
+  z-index: 1000;
+  box-shadow: 0 4px 0px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  gap: 24px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.1s;
+}
+
+.navbar-logo:hover {
+  transform: rotate(-3deg) scale(1.1);
+}
+
+.navbar-logo-img {
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.navbar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.navbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 950;
+  color: #000;
+  text-decoration: none;
+  transition: all 0.1s;
+  text-transform: uppercase;
+  border: 4px solid transparent;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.navbar-link:hover {
+  transform: translateY(-2px);
+  background: rgba(0,0,0,0.05);
+}
+
+.navbar-link.active {
+  background: var(--neo-yellow);
+  color: #000;
+  border-color: #000;
+  box-shadow: 6px 6px 0px #000;
+}
+
+.navbar-link:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.navbar-link-shop:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.navbar-link-text {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .navbar-link-text {
+    display: block;
+  }
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.nav-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.stat-item.coins {
+  background: #fff;
+  color: #ca8a04;
+}
+
+.stat-item.level {
+  background: #000;
+  color: #fff;
+}
+
+.user-control {
+  border: 2px solid #000;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 2px 2px 0px #000;
+  transition: transform 0.1s;
+}
+
+.user-control:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000;
+}

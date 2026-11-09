@@ -1,0 +1,104 @@
+/* ─── MedalBadge ─────────────────────────────────────────────────────────── */
+
+.medal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid var(--medal-border, #444);
+  padding: 4px 10px 4px 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.medal-badge:hover {
+  transform: translateY(-1px);
+}
+
+.medal-emoji {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.medal-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.medal-count {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.medal-label {
+  font-size: 0.46rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+.medal-badge.size-sm {
+  padding: 3px 8px 3px 5px;
+  gap: 4px;
+}
+
+.medal-badge.size-sm .medal-emoji {
+  font-size: 0.85rem;
+}
+
+.medal-badge.size-sm .medal-count {
+  font-size: 0.72rem;
+}
+
+.medal-badge.size-sm .medal-label {
+  font-size: 0.4rem;
+}
+
+.medal-badge.size-lg {
+  padding: 6px 14px 6px 10px;
+  gap: 8px;
+}
+
+.medal-badge.size-lg .medal-emoji {
+  font-size: 1.3rem;
+}
+
+.medal-badge.size-lg .medal-count {
+  font-size: 1.1rem;
+}
+
+.medal-badge.size-lg .medal-label {
+  font-size: 0.52rem;
+}
+
+/* ─── Type variants ───────────────────────────────────────────────────────── */
+.medal-gold {
+  background: rgba(255, 214, 0, 0.1);
+  border-color: rgba(255, 214, 0, 0.4);
+}
+
+.medal-gold .medal-count {
+  color: #FFD600;
+}
+
+.medal-silver {
+  background: rgba(156, 163, 175, 0.1);
+  border-color: rgba(156, 163, 175, 0.4);
+}
+
+.medal-silver .medal-count {
+  color: #d1d5db;
+}
+
+.medal-bronze {
+  background: rgba(180, 83, 9, 0.12);
+  border-color: rgba(180, 83, 9, 0.35);
+}
+
+.medal-bronze .medal-count {
+  color: #fbbf24;
+}

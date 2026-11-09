@@ -1,0 +1,214 @@
+.lab-topic-page {
+  background: var(--bg-base);
+}
+
+.lab-topic-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.lab-topic-hero-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Step navigation */
+.lab-step-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.lab-step-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.lab-step-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.lab-step-btn.active {
+  background: color-mix(in srgb, var(--step-color, var(--accent)) 12%, var(--bg-surface));
+  border-color: var(--step-color, var(--accent));
+  color: var(--step-color, var(--accent));
+}
+
+.lab-step-btn.done {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+}
+
+.lab-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.lab-step-btn.active .lab-step-num {
+  background: var(--step-color, var(--accent));
+  color: #fff;
+}
+
+.lab-step-btn.done .lab-step-num {
+  background: var(--success);
+  color: #fff;
+}
+
+.lab-step-label {
+  font-size: 0.875rem;
+}
+
+/* Step content area */
+.lab-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.lab-step-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-step-desc h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.lab-step-desc p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Visualizer container */
+.lab-visualizer-container {
+  max-width: 900px;
+}
+
+.lab-visualizer-sm {
+  max-width: 700px;
+}
+
+/* Understand step */
+.lab-concept-panel {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.lab-concept-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lab-concept-quote {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  border-left: 3px solid var(--accent);
+  padding-left: 20px;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+/* Code step */
+.lab-code-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.lab-code-left, .lab-code-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lab-code-example {
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-code-block {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  overflow-x: auto;
+}
+
+.lab-challenge-editor {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.lab-challenge-result {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.lab-challenge-result.success {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.lab-challenge-result.error {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-family: monospace;
+}
+
+/* Nav buttons */
+.lab-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}

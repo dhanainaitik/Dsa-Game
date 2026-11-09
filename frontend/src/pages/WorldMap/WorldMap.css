@@ -1,0 +1,245 @@
+/* ─── WorldMap ───────────────────────────────────────────────────────────── */
+.worldmap {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #FCF6E5;
+  padding-bottom: 120px;
+}
+
+.worldmap-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 0);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.worldmap-canvas {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  z-index: 1;
+}
+
+.terrain-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 300px 200px at 18% 28%, rgba(255,214,0,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 280px 180px at 42% 18%, rgba(255,214,0,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 260px 160px at 68% 22%, rgba(0,0,0,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 280px 200px at 25% 55%, rgba(255,214,0,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 300px 180px at 55% 48%, rgba(0,0,0,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 260px 160px at 78% 55%, rgba(255,214,0,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 280px 200px at 35% 75%, rgba(0,0,0,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 260px 180px at 62% 75%, rgba(255,214,0,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.map-connections {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.conn-line {
+  stroke: #FFD600;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 7;
+  opacity: 0.5;
+}
+
+/* Region nodes */
+.map-region {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.map-region.locked { cursor: not-allowed; }
+
+.region-blob {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50% 40% 60% 50% / 50% 60% 40% 50%;
+  background: #fff;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 4px 0 #FFD600;
+  z-index: 2;
+}
+
+.map-region::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 110px;
+  background: rgba(255,214,0,0.06);
+  border: 2px dashed rgba(0,0,0,0.12);
+  border-radius: 45% 55% 50% 50% / 55% 50% 45% 55%;
+  z-index: -1;
+  pointer-events: none;
+  transition: transform 0.3s;
+}
+
+.map-region.unlocked.is-hovered::before {
+  transform: translate(-50%, -50%) scale(1.12) rotate(5deg);
+  background: rgba(255,214,0,0.12);
+  border-color: rgba(0,0,0,0.2);
+}
+
+.map-region.locked .region-blob {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+  box-shadow: 4px 4px 0 #ccc;
+}
+
+.map-region.unlocked .region-blob {
+  border-color: color-mix(in srgb, var(--region-color) 40%, #000);
+  background: color-mix(in srgb, var(--region-color) 8%, #fff);
+}
+
+.map-region.unlocked.is-hovered .region-blob {
+  transform: scale(1.12);
+  box-shadow: 6px 6px 0 #FFD600;
+}
+
+.map-region.is-active { z-index: 20; }
+
+.region-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.region-name {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+  background: #FFD600;
+  border: 2px solid #000;
+  padding: 2px 8px;
+  box-shadow: 2px 2px 0 #000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.map-region.locked .region-name {
+  background: #ddd;
+  color: #888;
+  box-shadow: 2px 2px 0 #aaa;
+  border-color: #aaa;
+}
+
+.region-progress-text {
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Tooltip */
+.region-tooltip {
+  position: absolute;
+  z-index: 50;
+  background: #fff;
+  border: 4px solid #000;
+  padding: 20px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 8px 8px 0 #FFD600;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tooltip-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tooltip-name {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.tooltip-subtitle {
+  font-size: 0.7rem;
+  color: #666;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tooltip-desc {
+  font-size: 0.82rem;
+  color: #444;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.tooltip-meta {
+  font-size: 0.72rem;
+  color: #000;
+  font-family: 'JetBrains Mono', monospace;
+  background: #FFD600;
+  padding: 6px 10px;
+  border: 2px solid #000;
+  font-weight: 700;
+}
+
+.tooltip-locked {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 8px;
+  border-top: 2px solid #000;
+}
+
+.tooltip-cta {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 2px solid #000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,73 @@
+/* ─── Codex / Docs Page ──────────────────────────────────────────────────── */
+.docs-page {
+  background: #FCF6E5;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-h) + 32px);
+  height: fit-content;
+}
+
+/* Sidebar buttons */
+.docs-sidebar button {
+  transition: all 0.12s;
+  border: 4px solid #000 !important;
+  box-shadow: 4px 4px 0 #FFD600;
+  margin-bottom: 0;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.docs-sidebar button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #FFD600;
+}
+
+.docs-sidebar button.bg-black {
+  background: #000 !important;
+  color: #FFD600 !important;
+  box-shadow: 4px 4px 0 #FFD600;
+}
+
+.docs-sidebar button.bg-black:hover {
+  box-shadow: 6px 6px 0 #FFD600;
+}
+
+/* Content accordion cards */
+.docs-section {
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0 #FFD600;
+  background: #fff;
+  transition: all 0.12s;
+}
+
+.docs-section:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 9px 9px 0 #FFD600;
+}
+
+/* Heading inside accordion */
+.docs-section h3 {
+  color: #000;
+}
+
+/* Expand chevron — active */
+.docs-section .rotate-90 {
+  color: #000;
+}
+
+/* Body text */
+.docs-section p {
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* Separator inside card */
+.docs-section .h-px {
+  background: #FFD600 !important;
+  height: 3px !important;
+  border: none;
+}
