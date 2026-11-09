@@ -1,10 +1,13 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getLabTopic } from '../../data/logiclab';
+import { getHintsForQuestion } from '../../data/hints';
+import HintButton from '../../components/Hint/HintButton';
+import HintPanel from '../../components/Hint/HintPanel';
 import ArrayVisualizer from './visualizers/ArrayVisualizer';
 import StringVisualizer from './visualizers/StringVisualizer';
 import LinkedListVisualizer from './visualizers/LinkedListVisualizer';
@@ -41,6 +44,16 @@ export default function LogicLabTopic() {
   const [stepIdx, setStepIdx] = useState(0);
   const [challengeCode, setChallengeCode] = useState(topic?.challenge?.starterCode || '');
   const [challengeResult, setChallengeResult] = useState(null);
+  const [showHint, setShowHint] = useState(false);
+  const [hintLevel, setHintLevel] = useState(1);
+
+  // Reset hint state and code when navigating to a different topic
+  useEffect(() => {
+    setShowHint(false);
+    setHintLevel(1);
+    setChallengeCode(topic?.challenge?.starterCode || '');
+    setChallengeResult(null);
+  }, [topicId]);
 
   if (!topic) return (
     <div className="page"><div className="container page-content"><p>Topic not found.</p></div></div>
@@ -159,7 +172,8 @@ export default function LogicLabTopic() {
                   />
                 </div>
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                {/* Actions: [ RUN CODE ] [ SHOW SOLUTION ] [ HINT ] */}
+                <div className="lab-challenge-actions-row">
                   <button className="btn btn-primary btn-sm" onClick={runChallenge}>
                     Run Code
                   </button>
@@ -169,7 +183,23 @@ export default function LogicLabTopic() {
                   >
                     Show Solution
                   </button>
+                  <HintButton
+                    isOpen={showHint}
+                    onClick={() => setShowHint(v => !v)}
+                  />
                 </div>
+
+                {/* Progressive Hint Panel */}
+                {showHint && (
+                  <HintPanel
+                    hints={getHintsForQuestion(topicId)?.hints || getHintsForQuestion(topic?.challenge?.title)?.hints || []}
+                    hintLevel={hintLevel}
+                    onNextLevel={() => setHintLevel(lvl => Math.min(3, lvl + 1))}
+                    onPrevLevel={() => setHintLevel(lvl => Math.max(1, lvl - 1))}
+                    onClose={() => setShowHint(false)}
+                    questionTitle={topic?.challenge?.title || topic?.name}
+                  />
+                )}
 
                 {challengeResult && (
                   <div

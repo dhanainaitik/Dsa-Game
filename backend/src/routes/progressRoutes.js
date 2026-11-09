@@ -29,6 +29,10 @@ router.post('/:userId/sync', authMiddleware, async (req, res) => {
   const clerkId = req.auth.userId;
   const { xp, coins, level } = req.body;
 
+  if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL.includes('placeholder')) {
+    return res.json({ success: true, localOnly: true });
+  }
+
   try {
     const { data, error } = await supabase
       .from('player_profiles')

@@ -1,0 +1,366 @@
+/* ============================================================
+   PROGRESSIVE HINT SYSTEM - CODE2LIVING NEOBRUTALIST STYLING
+   ============================================================ */
+
+/* ─── Hint Button ─────────────────────────────────────────── */
+.btn-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #FFD600;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-hint:hover:not(:disabled) {
+  background: #FFF9C4;
+  color: #000000;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.btn-hint:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.btn-hint.active {
+  background: #FFD600;
+  color: #000000;
+  border-color: #000000;
+  box-shadow: 2px 2px 0px #000000;
+  transform: translate(1px, 1px);
+}
+
+.hint-btn-icon {
+  color: #FFB000;
+  stroke-width: 2.5;
+  transition: transform 0.2s;
+}
+
+.btn-hint.active .hint-btn-icon,
+.btn-hint:hover .hint-btn-icon {
+  color: #000000;
+  transform: rotate(12deg) scale(1.1);
+}
+
+/* ─── Actions Row Layout (Run Code, Show Solution, Hint) ───── */
+.lab-challenge-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+/* ─── Hint Panel ───────────────────────────────────────────── */
+.hint-panel {
+  background: #FCF6E5;
+  border: 3px solid #000000;
+  box-shadow: 6px 6px 0px #FFD600;
+  border-radius: 2px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+[data-theme="dark"] .hint-panel {
+  background: #1e1e28;
+  border-color: #000000;
+  box-shadow: 6px 6px 0px #FFD600;
+}
+
+/* ─── Header ──────────────────────────────────────────────── */
+.hint-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-bottom: 2px solid #000000;
+}
+
+[data-theme="dark"] .hint-panel-header {
+  background: #2a2a38;
+}
+
+.hint-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint-header-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #FFD600;
+  border: 2px solid #000000;
+  border-radius: 2px;
+  color: #000000;
+  box-shadow: 2px 2px 0px #000000;
+  flex-shrink: 0;
+}
+
+.hint-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint-header-prefix {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+[data-theme="dark"] .hint-header-prefix {
+  color: #ffffff;
+}
+
+.hint-header-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+[data-theme="dark"] .hint-header-label {
+  color: #ffffff;
+}
+
+.hint-close-btn {
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 2px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #000000;
+  transition: all 0.1s;
+  padding: 0;
+}
+
+.hint-close-btn:hover {
+  background: #FF4500;
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* ─── Body ────────────────────────────────────────────────── */
+.hint-panel-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hint-content-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .hint-content-text {
+  color: #e5e5e5;
+}
+
+.hint-content-text p {
+  margin-bottom: 6px;
+}
+
+.hint-content-text p:last-child {
+  margin-bottom: 0;
+}
+
+.hint-list-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 8px;
+  border-left: 3px solid #000000;
+  margin-top: 4px;
+}
+
+[data-theme="dark"] .hint-list-item {
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: #FFD600;
+}
+
+.hint-completed-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #D1FAE5;
+  border: 2px solid #059669;
+  padding: 8px 12px;
+  border-radius: 2px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #065F46;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+}
+
+[data-theme="dark"] .hint-completed-banner {
+  background: #064E3B;
+  border-color: #10B981;
+  color: #D1FAE5;
+}
+
+.hint-completed-icon {
+  flex-shrink: 0;
+  color: #059669;
+}
+
+[data-theme="dark"] .hint-completed-icon {
+  color: #34D399;
+}
+
+/* ─── Footer ──────────────────────────────────────────────── */
+.hint-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-top: 2px solid #000000;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+[data-theme="dark"] .hint-panel-footer {
+  background: #2a2a38;
+}
+
+.hint-progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint-step-bars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hint-step-bar {
+  width: 18px;
+  height: 8px;
+  background: #E5E7EB;
+  border: 1.5px solid #000000;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+
+.hint-step-bar.filled {
+  background: #FFD600;
+}
+
+.hint-step-bar.current {
+  box-shadow: inset 0 0 0 1px #000000;
+  transform: scaleY(1.15);
+}
+
+.hint-progress-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: 0.78rem;
+  color: #000000;
+  letter-spacing: 0.04em;
+}
+
+[data-theme="dark"] .hint-progress-text {
+  color: #ffffff;
+}
+
+.hint-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 2px solid #000000;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.hint-nav-btn.prev {
+  background: #ffffff;
+  color: #000000;
+}
+
+.hint-nav-btn.prev:hover {
+  background: #F3F4F6;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.hint-nav-btn.next {
+  background: #FFD600;
+  color: #000000;
+}
+
+.hint-nav-btn.next:hover {
+  background: #FFB000;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.hint-nav-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.hint-max-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: #000000;
+  color: #FFD600;
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+

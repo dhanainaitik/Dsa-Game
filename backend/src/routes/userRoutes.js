@@ -6,6 +6,20 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Get current user profile — auto-creates profile on first login (no webhook needed)
 router.get('/me', authMiddleware, async (req, res) => {
   const clerkId = req.auth.userId;
+  if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL.includes('placeholder')) {
+    const clerkUser = req.auth.sessionClaims;
+    return res.json({
+      clerk_id: clerkId,
+      username: clerkUser?.username || clerkUser?.first_name || 'Player',
+      email: clerkUser?.email || null,
+      level: 1,
+      xp: 0,
+      xp_to_next_level: 550,
+      coins: 100,
+      rank: 'BRONZE'
+    });
+  }
+
   try {
     // Try to fetch existing profile
     let { data, error } = await supabase
