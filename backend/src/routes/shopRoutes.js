@@ -5,13 +5,15 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Get all shop items
 router.get('/items', async (req, res) => {
+  if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL.includes('placeholder')) {
+    return res.json([]);
+  }
   try {
     const { data, error } = await supabase.from('items').select('*');
     if (error) throw error;
     res.json(data ?? []);
   } catch (error) {
-    // Fallback
-    res.json([{ id: 'mock-item', name: 'Magic Elixir', price: 100, type: 'consumable' }]);
+    res.json([]);
   }
 });
 

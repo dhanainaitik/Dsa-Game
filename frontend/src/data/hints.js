@@ -308,3 +308,68 @@ export function getHintsForQuestion(identifier) {
   return found || null;
 }
 
+/**
+ * Authoritative question hints dictionary for Arena & Problem challenges
+ */
+export const QUESTION_HINTS = {
+  // Question ID lookups
+  'p-arr-1-1': 'Access index 0. Check length first to handle the empty case.',
+  'p-arr-1-2': 'The last index is arr.length - 1.',
+  'p-arr-1-3': 'Traverse the array while maintaining a variable that stores the largest value encountered so far. Remember that all values can be negative.',
+  'p-arr-1-4': 'Spread into a new array first, then call .reverse() to avoid mutating the original.',
+  'p-arr-1-5': 'Think about using a Set to remember which numbers you have already encountered.',
+  'p-arr-2-1': 'Think about how a HashMap can help you find the complement of the current number without checking every pair.',
+  'p-arr-2-2': 'Spread both arrays together, then sort. Or use a two-pointer approach for O(n+m).',
+  'p-arr-2-3': "Kadane's Algorithm: at each position, either extend the previous subarray or start fresh.",
+  'p-arr-2-4': 'k % arr.length handles over-rotation. Slice from the end and combine with the start.',
+  'p-arr-2-5': 'Two pointers from both ends. Move the pointer pointing to the shorter wall inward.',
+  'p-arr-3-1': 'Two passes: one for prefix products, one for suffix products. Combine them.',
+  'p-arr-3-2': 'First pass: record which rows and columns have zeros. Second pass: apply zeros.',
+  'p-arr-3-3': 'Use four boundary pointers (top, bottom, left, right) and shrink them after each pass.',
+  'p-arr-3-4': 'Two pointers. Water at each position = min(maxLeft, maxRight) - height[i].',
+  'p-arr-3-5': 'Use a Set. Only start counting from the beginning of a sequence (where num-1 does not exist).',
+  'p-str-1-1': 'Clean the string (lowercase, remove non-alphanumeric), then compare with its reverse.',
+  'p-str-1-2': 'Sort both strings and compare, OR use a character frequency map.',
+  'p-str-1-3': 'Sliding window + Map to track last seen index. Move left pointer past the duplicate.',
+  'p-str-1-4': 'If a smaller value precedes a larger one (e.g. IV), subtract it. Otherwise add it.',
+  'p-str-1-5': 'Sort each word to create a canonical key. Words with the same sorted form are anagrams.',
+  'p-ll-1-1': 'Traverse with a pointer. Increment count at each node until null.',
+  'p-ll-1-2': 'Use three pointers: prev, curr, next. Reassign curr.next = prev at each step.',
+  'p-ll-1-3': "Floyd's cycle detection: slow moves 1 step, fast moves 2. If they meet, there's a cycle.",
+  'p-ll-1-4': 'Two pointers n+1 apart. When fast reaches null, slow is just before the node to remove.',
+  'p-ll-1-5': 'Dummy head simplifies edge cases. At each step, attach the smaller node.',
+
+  // Common titles / canonical aliases
+  'maximum-signal': 'Traverse the array while maintaining a variable that stores the largest value encountered so far. Remember that all values can be negative.',
+  'two-sum': 'Think about how a HashMap can help you find the complement of the current number without checking every pair.',
+  'two-sum-gate': 'Think about how a HashMap can help you find the complement of the current number without checking every pair.',
+  'find-the-missing-number': 'Compare the expected sum of numbers from 0 to n with the actual sum of the array.',
+  'contains-duplicate': 'Think about using a Set to remember which numbers you have already encountered.',
+  'duplicate-scan': 'Think about using a Set to remember which numbers you have already encountered.',
+};
+
+/**
+ * Retrieve the single authoritative question-specific hint for Hint Scroll usage.
+ */
+export function getProblemHint(problemId, problem = null) {
+  if (problemId && QUESTION_HINTS[problemId]) {
+    return QUESTION_HINTS[problemId];
+  }
+  if (problem?.id && QUESTION_HINTS[problem.id]) {
+    return QUESTION_HINTS[problem.id];
+  }
+  if (problem?.title) {
+    const slug = problem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    if (QUESTION_HINTS[slug]) return QUESTION_HINTS[slug];
+  }
+  if (problemId) {
+    const slug = String(problemId).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    if (QUESTION_HINTS[slug]) return QUESTION_HINTS[slug];
+  }
+  if (problem?.hint) {
+    return problem.hint;
+  }
+  return null;
+}
+
+

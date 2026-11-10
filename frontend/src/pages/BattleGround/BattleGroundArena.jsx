@@ -13,6 +13,7 @@ import { useMultiplayer } from '../../context/MultiplayerContext';
 import { useProgress } from '../../context/ProgressContext';
 import { useVoiceChat } from '../../hooks/useVoiceChat';
 import { runCode } from '../../utils/codeRunner';
+import { triggerGoblinDefeatEffects } from '../../utils/goblinEffects';
 import VoicePanel from '../../components/Battle/VoicePanel';
 import TeamCombo from '../../components/Battle/TeamCombo';
 import MedalBadge from '../../components/Battle/MedalBadge';
@@ -22,7 +23,7 @@ import './BattleGroundArena.css';
 export default function BattleGroundArena() {
   const { user } = useUser();
   const navigate = useNavigate();
-  const { progress } = useProgress();
+  const { progress, awardProblemCoins } = useProgress();
   const {
     socket,
     room,
@@ -134,6 +135,17 @@ export default function BattleGroundArena() {
       setRunResults(results);
       setSubmitted(true);
       submitCode(roomId, results);
+
+      // Award +20 coins if all test cases pass on submission (first-time solve)
+      const allPassed = Array.isArray(results) && results.length > 0 && results.every(r => r.passed);
+      if (allPassed) {
+        awardProblemCoins(`bg-${problem.id || problem.title}`, {
+          problemTitle: problem.title,
+          section: 'Battle Ground Arena',
+        });
+      } else {
+        triggerGoblinDefeatEffects({ targetSelector: '.bg-arena' });
+      }
     } catch (err) {
       console.error(err);
     } finally {

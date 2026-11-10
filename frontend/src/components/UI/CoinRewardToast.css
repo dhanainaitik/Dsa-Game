@@ -1,0 +1,153 @@
+/* ==========================================
+   COIN REWARD TOAST NOTIFICATION (GLOBAL)
+   ========================================== */
+.coin-reward-toast-wrapper {
+  position: fixed;
+  top: 85px;
+  right: 24px;
+  z-index: 10000;
+  pointer-events: auto;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.coin-reward-toast {
+  background: #FCF6E5;
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0 #FFD600;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  min-width: 320px;
+  max-width: 440px;
+  position: relative;
+}
+
+.reward-toast-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coin-spin-icon {
+  width: 52px;
+  height: 52px;
+  background: #FFD600;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  animation: coinBounce 1.2s ease-in-out infinite alternate;
+}
+
+.coin-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+@keyframes coinBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-4px) scale(1.08); }
+}
+
+.reward-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.reward-toast-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.reward-coins-badge {
+  background: #000;
+  color: #FFD600;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border: 1px solid #000;
+}
+
+.reward-section-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 0.06em;
+}
+
+.reward-toast-heading {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+  color: #000;
+}
+
+.reward-toast-sub {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+  margin: 2px 0 4px 0;
+}
+
+.reward-problem-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #000;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-left: 2px solid #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reward-toast-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.reward-toast-close:hover {
+  transform: scale(1.2);
+}
+
+[data-theme="dark"] .coin-reward-toast {
+  background: #18181b;
+  border-color: #FFD600;
+  box-shadow: 6px 6px 0 #FFD600;
+}
+
+[data-theme="dark"] .reward-toast-heading {
+  color: #fff;
+}
+
+[data-theme="dark"] .reward-toast-sub {
+  color: #a1a1aa;
+}
+
+[data-theme="dark"] .reward-problem-title {
+  background: rgba(255, 214, 0, 0.1);
+  color: #FFD600;
+  border-left-color: #FFD600;
+}
+
+[data-theme="dark"] .reward-toast-close {
+  color: #FFD600;
+}
+

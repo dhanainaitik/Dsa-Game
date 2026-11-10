@@ -19,6 +19,12 @@ arr.shift();   // Remove from front — O(n)`,
     challenge: {
       title: 'Find the Missing Number',
       description: 'Given an array of n distinct numbers from 0 to n, find the missing number.',
+      fnName: 'findMissing',
+      testCases: [
+        { input: [[3, 0, 1]], expected: 2 },
+        { input: [[0, 1]], expected: 2 },
+        { input: [[9, 6, 4, 2, 3, 5, 7, 0, 1]], expected: 8 },
+      ],
       starterCode: `function findMissing(arr) {
   // Your implementation here
 }`,
@@ -47,6 +53,12 @@ console.log(s.split(' '));    // ['hello', 'world']`,
     challenge: {
       title: 'Count Vowels',
       description: 'Return the count of vowels in the string.',
+      fnName: 'countVowels',
+      testCases: [
+        { input: ['hello'], expected: 2 },
+        { input: ['Code2Living'], expected: 4 },
+        { input: ['rhythm'], expected: 0 },
+      ],
       starterCode: `function countVowels(s) {
   // Your implementation here
 }`,
@@ -91,6 +103,11 @@ class LinkedList {
     challenge: {
       title: 'Middle of the List',
       description: 'Return the value of the middle node. If even length, return the second middle.',
+      fnName: 'findMiddle',
+      testCases: [
+        { input: [{ val: 1, next: { val: 2, next: { val: 3, next: null } } }], expected: 2 },
+        { input: [{ val: 1, next: { val: 2, next: { val: 3, next: { val: 4, next: null } } } }], expected: 3 },
+      ],
       starterCode: `function findMiddle(head) {
   // Use fast/slow pointer technique
 }`,
@@ -129,6 +146,12 @@ queue.shift();    // 1 — removes first (O(n) in JS!)
     challenge: {
       title: 'Valid Parentheses',
       description: 'Return true if brackets are properly nested and closed.',
+      fnName: 'isValid',
+      testCases: [
+        { input: ['()'], expected: true },
+        { input: ['()[]{}'], expected: true },
+        { input: ['(]'], expected: false },
+      ],
       starterCode: `function isValid(s) {
   // Use a stack!
 }`,
@@ -170,6 +193,11 @@ function inorder(root, result = []) {
     challenge: {
       title: 'Maximum Depth',
       description: 'Return the maximum depth (height) of a binary tree.',
+      fnName: 'maxDepth',
+      testCases: [
+        { input: [{ val: 3, left: { val: 9, left: null, right: null }, right: { val: 20, left: null, right: null } }], expected: 2 },
+        { input: [null], expected: 0 },
+      ],
       starterCode: `function maxDepth(root) {
   // Use recursion
 }`,
@@ -215,6 +243,11 @@ function bfs(graph, start) {
     challenge: {
       title: 'Number of Islands',
       description: 'Count connected land regions ("1"s) in a 2D grid of 0s and 1s.',
+      fnName: 'numIslands',
+      testCases: [
+        { input: [[["1","1","0"],["1","1","0"],["0","0","1"]]], expected: 2 },
+        { input: [[["1","1","1"],["0","1","0"],["1","1","1"]]], expected: 1 },
+      ],
       starterCode: `function numIslands(grid) {
   // DFS or BFS flood fill
 }`,
@@ -264,6 +297,12 @@ function fibTab(n) {
     challenge: {
       title: 'Climbing Stairs',
       description: 'Count distinct ways to climb n stairs, taking 1 or 2 steps at a time.',
+      fnName: 'climbStairs',
+      testCases: [
+        { input: [2], expected: 2 },
+        { input: [3], expected: 3 },
+        { input: [5], expected: 8 },
+      ],
       starterCode: `function climbStairs(n) {
   // DP — notice the fibonacci pattern
 }`,
@@ -298,6 +337,12 @@ function factorial(n) {
     challenge: {
       title: 'Power Function',
       description: 'Implement pow(base, exp) recursively. Handle negative exponents.',
+      fnName: 'pow',
+      testCases: [
+        { input: [2, 10], expected: 1024 },
+        { input: [2, 0], expected: 1 },
+        { input: [3, 3], expected: 27 },
+      ],
       starterCode: `function pow(base, exp) {
   // Recursive — aim for O(log n)
 }`,
@@ -305,7 +350,7 @@ function factorial(n) {
   if (exp === 0) return 1;
   if (exp < 0) return 1 / pow(base, -exp);
   if (exp % 2 === 0) {
-    const half = pow(base, exp / 2);
+    const half = pow(base, Math.floor(exp / 2));
     return half * half;
   }
   return base * pow(base, exp - 1);

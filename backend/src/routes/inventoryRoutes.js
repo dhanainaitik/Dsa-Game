@@ -6,6 +6,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Get inventory
 router.get('/', authMiddleware, async (req, res) => {
   const clerkId = req.auth.userId;
+  if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL.includes('placeholder')) {
+    return res.json([]);
+  }
   try {
     const { data, error } = await supabase
       .from('user_inventory')

@@ -10,8 +10,10 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Send, ArrowLeft, Lightbulb, CheckCircle2, XCircle, Coins, Zap } from 'lucide-react';
 import { useMultiplayer } from '../../context/MultiplayerContext';
+import { useProgress } from '../../context/ProgressContext';
 import { useVoiceChat } from '../../hooks/useVoiceChat';
 import { runCode } from '../../utils/codeRunner';
+import { triggerGoblinDefeatEffects } from '../../utils/goblinEffects';
 import VoicePanel from '../../components/Battle/VoicePanel';
 import TeamCombo from '../../components/Battle/TeamCombo';
 import gsap from 'gsap';
@@ -20,6 +22,7 @@ import './MultiplayerArena.css';
 export default function MultiplayerArena() {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { awardProblemCoins } = useProgress();
   const { socket, room, myTeam, teamHP, bossHP, submissions, comboEvent, typingUsers, matchResult, rateLimited, submitCode, sendTyping, voiceMuted, voiceSpeaking } = useMultiplayer();
 
   useEffect(() => { if (!room) navigate('/pvp', { replace: true }); }, [room, navigate]);
@@ -91,6 +94,17 @@ export default function MultiplayerArena() {
       setRunResults(results);
       setSubmitted(true);
       submitCode(roomId, results);
+
+      // Award +20 coins if all test cases pass on submission (first-time solve)
+      const allPassed = Array.isArray(results) && results.length > 0 && results.every(r => r.passed);
+      if (allPassed) {
+        awardProblemCoins(`mp-${problem.id || problem.title}`, {
+          problemTitle: problem.title,
+          section: 'Multiplayer Arena',
+        });
+      } else {
+        triggerGoblinDefeatEffects({ targetSelector: '.mp-arena' });
+      }
     } catch (err) { console.error(err); }
     finally { setIsSubmitting(false); }
   };

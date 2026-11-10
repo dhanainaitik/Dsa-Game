@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { STATES } from '../data/problems';
+import { ITEMS } from '../data/items';
 import { useAuth } from './AuthContext';
 
 const ProgressContext = createContext(null);
@@ -7,6 +8,8 @@ const ProgressContext = createContext(null);
 // Initial state for V3 + Battle Ground
 const DEFAULT_STATE = {
   solvedProblems: {}, // { problemId: true }
+  rewardedProblems: {}, // { [problemId]: true } -> tracks exactly which problems have received the +20 coins
+  coinTransactions: [], // [{ id, problemId, problemTitle, section, coins: 20, timestamp }]
   problemStats: {},   // { problemId: { score, attempts, xp, coins } }
   completedStates: {}, // { stateId: true }
   xp: 0,
@@ -17,7 +20,8 @@ const DEFAULT_STATE = {
   silverMedals: 0,
   bronzeMedals: 0,
   unlockedRegions: { arrays: true }, 
-  inventory: {},
+  inventory: {}, // { [itemId]: quantity }
+  activeBuffs: {}, // { [buffKey]: timestamp | boolean }
 };
 
 function loadProgress() {
@@ -47,6 +51,9 @@ const getLevelFromXP = (xp) => {
 
 export function ProgressProvider({ children }) {
   const [progress, setProgress] = useState(loadProgress);
+  const [rewardToast, setRewardToast] = useState(null);
+  const clearRewardToast = () => setRewardToast(null);
+  const inFlightRewardsRef = useRef(new Set());
 
   const { user } = useAuth();
 
@@ -112,39 +119,190 @@ export function ProgressProvider({ children }) {
 
   }, [progress, user]);
 
+  // Buff status helper
+  const isBuffActive = (buffKey) => {
+    const val = progress.activeBuffs?.[buffKey];
+    if (!val) return false;
+    if (typeof val === 'number') {
+      return Date.now() < val;
+    }
+    return Boolean(val);
+  };
+
+  const activateBuff = (buffKey, durationMs = 3600000) => {
+    setProgress(prev => ({
+      ...prev,
+      activeBuffs: {
+        ...(prev.activeBuffs || {}),
+        [buffKey]: durationMs ? Date.now() + durationMs : true,
+      },
+    }));
+  };
+
+  const clearBuff = (buffKey) => {
+    setProgress(prev => {
+      if (!prev.activeBuffs || !(buffKey in prev.activeBuffs)) return prev;
+      const nextBuffs = { ...prev.activeBuffs };
+      delete nextBuffs[buffKey];
+      return {
+        ...prev,
+        activeBuffs: nextBuffs,
+      };
+    });
+  };
+
   // V3 Scoring & Damage Formula
-  const calculateRewards = (difficulty, attempts, correctness = 1.0, efficiency = 1.0, quality = 1.0) => {
+  const calculateRewards = (difficulty, attempts, correctness = 1.0, efficiency = 1.0, quality = 1.0, options = {}) => {
     const baseXP = { 'Easy': 50, 'Easy-Medium': 80, 'Medium': 120, 'Medium-Hard': 180, 'Hard': 250 }[difficulty] || 50;
     const baseCoins = { 'Easy': 15, 'Easy-Medium': 25, 'Medium': 40, 'Medium-Hard': 60, 'Hard': 90 }[difficulty] || 15;
 
+    // If focus charm is active, attempt penalty is negated (effective attempts = 1)
+    const effectiveAttempts = (options.focusCharmActive || options.attempts === 1) ? 1 : Math.max(1, attempts);
+
     const score = (0.60 * correctness) + (0.25 * Math.min(1, efficiency)) + (0.15 * Math.min(1, quality));
-    const attempt_multiplier = Math.max(0.50, 1.0 - (attempts - 1) * 0.10);
+    const attempt_multiplier = Math.max(0.50, 1.0 - (effectiveAttempts - 1) * 0.10);
     const final_score = score * attempt_multiplier;
     
-    const critical_hit = (final_score >= 0.95 && attempts === 1);
+    const critical_hit = (final_score >= 0.95 && effectiveAttempts === 1);
     const crit_mod = critical_hit ? 1.5 : 1.0;
+
+    // XP boost (from XP Tome +50%)
+    const xpBoostMod = (options.xpBoostActive || isBuffActive('xp_tome')) ? 1.5 : 1.0;
+
+    // Coin boost (from Lightning Flask 2x)
+    let coinMod = 1.0;
+    if (options.doubleCoins || options.lightningFlaskActive) {
+      coinMod *= 2.0;
+    }
 
     return {
       score: final_score,
-      xpGain: Math.floor(baseXP * final_score * crit_mod),
-      coinGain: Math.floor(baseCoins * final_score * attempt_multiplier * (critical_hit ? 1.5 : 1.0)),
+      xpGain: Math.floor(baseXP * final_score * crit_mod * xpBoostMod),
+      coinGain: Math.floor(baseCoins * final_score * attempt_multiplier * (critical_hit ? 1.5 : 1.0) * coinMod),
       critical: critical_hit
     };
   };
 
-  const markSolved = (problemId, stateId, difficulty = 'Easy', attempts = 1) => {
+  // Check if a problem has already been rewarded with coins
+  const isProblemRewarded = (problemId) => {
+    if (!problemId) return false;
+    const cleanId = String(problemId).trim().toLowerCase();
+    return Boolean(progress.rewardedProblems?.[cleanId]);
+  };
+
+  // Centralized Global Coin Reward Service (Awards +20 coins once per unique problem)
+  const awardProblemCoins = (problemId, options = {}) => {
+    if (!problemId) return { success: false, reason: 'missing_id', coinsAwarded: 0 };
+    const cleanId = String(problemId).trim().toLowerCase();
+
+    // 1. Guard against duplicate reward
+    if (progress.rewardedProblems?.[cleanId]) {
+      return { success: false, reason: 'already_rewarded', coinsAwarded: 0 };
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('codo-progress') || '{}');
+      if (saved.rewardedProblems?.[cleanId]) {
+        return { success: false, reason: 'already_rewarded', coinsAwarded: 0 };
+      }
+    } catch {
+      // ignore
+    }
+
+    // 2. Debounce in-flight race condition lock
+    if (inFlightRewardsRef.current.has(cleanId)) {
+      return { success: false, reason: 'already_processing', coinsAwarded: 0 };
+    }
+    inFlightRewardsRef.current.add(cleanId);
+
+    // 3. Exact 20 coins reward (+40 if lightning flask is active)
+    const isDouble = Boolean(options.lightningFlaskActive || options.multiplier === 2);
+    const coinsToAward = isDouble ? 40 : 20;
+    const problemTitle = options.problemTitle || options.title || cleanId;
+    const sectionName = options.section || 'Coding Challenge';
+
+    const transaction = {
+      id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      problemId: cleanId,
+      problemTitle,
+      section: sectionName,
+      coins: coinsToAward,
+      timestamp: new Date().toISOString(),
+    };
+
     setProgress(prev => {
-      const isFirstSolve = !prev.solvedProblems[problemId];
-      
-      const rewards = calculateRewards(difficulty, attempts);
-      let totalXPGain = rewards.xpGain + (isFirstSolve ? 30 : 0);
-      let totalCoinGain = rewards.coinGain;
+      if (prev.rewardedProblems?.[cleanId]) return prev;
+
+      return {
+        ...prev,
+        coins: (prev.coins ?? 100) + coinsToAward,
+        rewardedProblems: {
+          ...(prev.rewardedProblems || {}),
+          [cleanId]: true,
+        },
+        solvedProblems: {
+          ...(prev.solvedProblems || {}),
+          [cleanId]: true,
+        },
+        coinTransactions: [
+          transaction,
+          ...(prev.coinTransactions || []).slice(0, 99),
+        ],
+      };
+    });
+
+    // 4. Trigger Global Reward Toast / Animation
+    setRewardToast({
+      coins: coinsToAward,
+      title: problemTitle,
+      section: sectionName,
+      id: Date.now(),
+    });
+
+    setTimeout(() => {
+      inFlightRewardsRef.current.delete(cleanId);
+    }, 1200);
+
+    return {
+      success: true,
+      coinsAwarded: coinsToAward,
+      transaction,
+    };
+  };
+
+  const markSolved = (problemId, stateId, difficulty = 'Easy', attempts = 1, options = {}) => {
+    const rewards = calculateRewards(difficulty, attempts, 1.0, 1.0, 1.0, options);
+    let totalXPGain = 0;
+    const cleanId = String(problemId).trim().toLowerCase();
+
+    // Trigger atomic 20-coin global reward for first-time solve
+    const rewardRes = awardProblemCoins(cleanId, {
+      problemTitle: options.problemTitle || STATES[stateId]?.problems?.find(p => p === problemId) || cleanId,
+      section: options.section || 'World Map Challenge',
+      lightningFlaskActive: options.lightningFlaskActive,
+    });
+
+    setProgress(prev => {
+      const isFirstSolve = !prev.solvedProblems[cleanId] && !prev.solvedProblems[problemId];
+      totalXPGain = rewards.xpGain + (isFirstSolve ? 30 : 0);
 
       const newXP = prev.xp + totalXPGain;
       const newLevel = getLevelFromXP(newXP);
 
-      const newSolved = { ...prev.solvedProblems, [problemId]: true };
-      const newStats = { ...prev.problemStats, [problemId]: { attempts, score: rewards.score, xp: totalXPGain, coins: totalCoinGain } };
+      const newSolved = { 
+        ...prev.solvedProblems, 
+        [problemId]: true,
+        [cleanId]: true 
+      };
+      const newStats = { 
+        ...prev.problemStats, 
+        [problemId]: { 
+          attempts, 
+          score: rewards.score, 
+          xp: totalXPGain, 
+          coinsAwarded: rewardRes.coinsAwarded 
+        } 
+      };
       
       const state = STATES[stateId];
       const stateComplete = state?.problems.every(pid => newSolved[pid]);
@@ -165,11 +323,14 @@ export function ProgressProvider({ children }) {
         unlockedRegions: newUnlocked,
         xp: newXP,
         level: newLevel,
-        coins: prev.coins + totalCoinGain,
       };
     });
     
-    return calculateRewards(difficulty, attempts);
+    return {
+      ...rewards,
+      coinsAwarded: rewardRes.coinsAwarded,
+      isNewReward: rewardRes.success,
+    };
   };
 
   const deductPlayerHP = (enemyBaseAttack, correctness) => {
@@ -181,7 +342,120 @@ export function ProgressProvider({ children }) {
   };
 
   const addCoins = (amount) => setProgress(prev => ({ ...prev, coins: prev.coins + amount }));
-  const spendCoins = (amount) => setProgress(prev => ({ ...prev, coins: prev.coins - amount }));
+  const spendCoins = (amount) => setProgress(prev => ({ ...prev, coins: Math.max(0, prev.coins - amount) }));
+
+  // Inventory Management System
+  const buyItem = (item) => {
+    if (!item || !item.id) return { success: false, reason: 'invalid_item' };
+    const price = Number(item.price) || 0;
+
+    if ((progress.coins || 0) < price) {
+      return { success: false, reason: 'insufficient_coins', currentCoins: progress.coins || 0, price };
+    }
+
+    let updatedQty = 1;
+    setProgress(prev => {
+      const currentCoins = prev.coins ?? 0;
+      if (currentCoins < price) return prev;
+
+      const nextCoins = currentCoins - price;
+
+      // Handle map region unlocks
+      if (item.type === 'map' || ['strings', 'linked-lists', 'trees'].includes(item.id)) {
+        return {
+          ...prev,
+          coins: nextCoins,
+          unlockedRegions: {
+            ...(prev.unlockedRegions || {}),
+            [item.id]: true,
+          },
+        };
+      }
+
+      // Consumables / boosts / passives / cosmetics
+      const currentQty = prev.inventory?.[item.id] || 0;
+      updatedQty = currentQty + 1;
+      const nextInv = {
+        ...(prev.inventory || {}),
+        [item.id]: updatedQty,
+      };
+
+      return {
+        ...prev,
+        coins: nextCoins,
+        inventory: nextInv,
+      };
+    });
+
+    return { success: true, item, newQuantity: updatedQty };
+  };
+
+  const useItem = (itemId) => {
+    if (!itemId) return { success: false, reason: 'invalid_id' };
+    const currentQty = progress.inventory?.[itemId] || 0;
+    if (currentQty <= 0) {
+      return { success: false, reason: 'not_in_inventory' };
+    }
+
+    const itemMeta = ITEMS[itemId] || { id: itemId, name: itemId, icon: '📦' };
+    let remaining = 0;
+
+    setProgress(prev => {
+      const prevQty = prev.inventory?.[itemId] || 0;
+      if (prevQty <= 0) return prev;
+
+      const nextInv = { ...(prev.inventory || {}) };
+      if (prevQty - 1 <= 0) {
+        delete nextInv[itemId];
+        remaining = 0;
+      } else {
+        nextInv[itemId] = prevQty - 1;
+        remaining = prevQty - 1;
+      }
+
+      return {
+        ...prev,
+        inventory: nextInv,
+      };
+    });
+
+    return { success: true, item: itemMeta, remaining };
+  };
+
+  const getInventoryList = () => {
+    const inv = progress.inventory || {};
+    return Object.entries(inv)
+      .filter(([_, qty]) => Number(qty) > 0)
+      .map(([id, qty]) => {
+        const meta = ITEMS[id] || {
+          id,
+          name: id,
+          type: 'consumable',
+          rarity: 'common',
+          description: '',
+          icon: '📦',
+        };
+        return {
+          id,
+          item_id: id,
+          quantity: qty,
+          items: {
+            ...meta,
+            slug: id,
+          },
+        };
+      });
+  };
+
+  const unlockRegion = (regionId) => {
+    setProgress(prev => ({
+      ...prev,
+      unlockedRegions: {
+        ...(prev.unlockedRegions || {}),
+        [regionId]: true,
+      },
+    }));
+  };
 
   // Battle Token & Medal Actions
   const addBattleTokens = (amount = 1) => setProgress(prev => ({ ...prev, battleTokens: (prev.battleTokens || 0) + amount }));
@@ -246,6 +520,18 @@ export function ProgressProvider({ children }) {
       deductBattleTokens,
       setBattleTokens,
       addMedals,
+      buyItem,
+      useItem,
+      getInventoryList,
+      activateBuff,
+      clearBuff,
+      isBuffActive,
+      unlockRegion,
+      awardProblemCoins,
+      isProblemRewarded,
+      rewardToast,
+      clearRewardToast,
+      coinTransactions: progress.coinTransactions || [],
     }}>
       {children}
     </ProgressContext.Provider>

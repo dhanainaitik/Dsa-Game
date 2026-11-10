@@ -78,7 +78,7 @@ The readings may be negative. Return the single highest value.`,
     solution: `function solve(arr) {
   return Math.max(...arr);
 }`,
-    hint: 'Math.max() with spread operator, or iterate and track a running maximum.',
+    hint: 'Traverse the array while maintaining a variable that stores the largest value encountered so far. Remember that all values can be negative.',
     explanation: 'Linear scan O(n) is required. Math.max(...arr) is elegant but has stack limits for very large arrays.',
   },
   'p-arr-1-4': {
@@ -129,7 +129,7 @@ Speed matters — aim for O(n).`,
     solution: `function solve(arr) {
   return new Set(arr).size !== arr.length;
 }`,
-    hint: 'A Set stores only unique values. Compare its size to the original array length.',
+    hint: 'Think about using a Set to remember which numbers you have already encountered.',
     explanation: 'Set automatically deduplicates. If sizes differ, duplicates exist. O(n) time and space.',
   },
 
@@ -161,7 +161,7 @@ Return the indices as an array [i, j].`,
     map.set(arr[i], i);
   }
 }`,
-    hint: 'Use a Map to store seen values. For each element, check if (target - element) was seen before.',
+    hint: 'Think about how a HashMap can help you find the complement of the current number without checking every pair.',
     explanation: 'Hash map approach: O(n) time, O(n) space. For each element, look up its complement in O(1).',
   },
   'p-arr-2-2': {

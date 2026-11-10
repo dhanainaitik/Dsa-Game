@@ -6,6 +6,8 @@ import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { getLabTopic } from '../../data/logiclab';
 import { getHintsForQuestion } from '../../data/hints';
+import { useProgress } from '../../context/ProgressContext';
+import { triggerGoblinDefeatEffects } from '../../utils/goblinEffects';
 import HintButton from '../../components/Hint/HintButton';
 import HintPanel from '../../components/Hint/HintPanel';
 import ArrayVisualizer from './visualizers/ArrayVisualizer';
@@ -41,9 +43,12 @@ export default function LogicLabTopic() {
   const { topicId } = useParams();
   const navigate = useNavigate();
   const topic = getLabTopic(topicId);
+  const { awardProblemCoins, isProblemRewarded } = useProgress();
+
   const [stepIdx, setStepIdx] = useState(0);
   const [challengeCode, setChallengeCode] = useState(topic?.challenge?.starterCode || '');
   const [challengeResult, setChallengeResult] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [hintLevel, setHintLevel] = useState(1);
 
@@ -62,13 +67,114 @@ export default function LogicLabTopic() {
   const Visualizer = VISUALIZERS[topicId];
   const currentStep = STEPS[stepIdx];
 
+  // Dry Run: Tests sample case or checks syntax — DOES NOT AWARD COINS
   const runChallenge = () => {
     try {
+      const fnName = topic?.challenge?.fnName || topic?.challenge?.starterCode?.match(/function\s+(\w+)/)?.[1] || 'solve';
       // eslint-disable-next-line no-new-func
-      const fn = new Function(challengeCode + `\nreturn solve || ${topic.challenge.starterCode.match(/function\s+(\w+)/)?.[1]};`);
-      setChallengeResult({ success: true, msg: 'Code executed without errors. Check console for output.' });
+      const runner = new Function(challengeCode + `\nreturn ${fnName};`);
+      const userFn = runner();
+      if (typeof userFn !== 'function') {
+        throw new Error(`Function "${fnName}" is not defined.`);
+      }
+
+      const sampleCase = topic?.challenge?.testCases?.[0];
+      if (sampleCase) {
+        const args = Array.isArray(sampleCase.input) ? sampleCase.input : [sampleCase.input];
+        const actual = userFn(...JSON.parse(JSON.stringify(args)));
+        const actualStr = JSON.stringify(actual);
+        const expectedStr = JSON.stringify(sampleCase.expected);
+
+        if (actualStr === expectedStr || actual === sampleCase.expected) {
+          setChallengeResult({
+            success: true,
+            msg: `✓ Dry run passed on sample test case! Click "Submit Solution" to test all cases and claim +20 coins.`,
+          });
+        } else {
+          setChallengeResult({
+            success: false,
+            msg: `Dry run failed on sample case: Expected ${expectedStr}, got ${actualStr}`,
+          });
+        }
+      } else {
+        setChallengeResult({
+          success: true,
+          msg: 'Code executed without errors. Click "Submit Solution" to verify and earn coins.',
+        });
+      }
     } catch (e) {
-      setChallengeResult({ success: false, msg: e.message });
+      setChallengeResult({ success: false, msg: `Execution Error: ${e.message}` });
+    }
+  };
+
+  // Authoritative Submission: Validates all test cases & awards +20 coins for first-time solve
+  const submitChallenge = () => {
+    setIsSubmitting(true);
+    try {
+      const fnName = topic?.challenge?.fnName || topic?.challenge?.starterCode?.match(/function\s+(\w+)/)?.[1] || 'solve';
+      // eslint-disable-next-line no-new-func
+      const runner = new Function(challengeCode + `\nreturn ${fnName};`);
+      const userFn = runner();
+      if (typeof userFn !== 'function') {
+        throw new Error(`Function "${fnName}" was not found or is not a function.`);
+      }
+
+      const testCases = topic?.challenge?.testCases || [];
+      let passedCount = 0;
+      let firstFailure = null;
+
+      for (let i = 0; i < testCases.length; i++) {
+        const tc = testCases[i];
+        const args = Array.isArray(tc.input) ? tc.input : [tc.input];
+        const actual = userFn(...JSON.parse(JSON.stringify(args)));
+        const actualStr = JSON.stringify(actual);
+        const expectedStr = JSON.stringify(tc.expected);
+
+        if (actualStr === expectedStr || actual === tc.expected) {
+          passedCount++;
+        } else if (!firstFailure) {
+          firstFailure = `Test #${i + 1} Failed: Expected ${expectedStr}, got ${actualStr}`;
+        }
+      }
+
+      const allPassed = testCases.length > 0 && passedCount === testCases.length;
+
+      if (allPassed) {
+        const problemKey = `logiclab-${topicId}`;
+        const alreadyClaimed = isProblemRewarded(problemKey);
+        const rewardRes = awardProblemCoins(problemKey, {
+          problemTitle: `${topic.name}: ${topic.challenge.title}`,
+          section: 'Logic Lab',
+        });
+
+        if (rewardRes.success) {
+          setChallengeResult({
+            success: true,
+            msg: `🎉 All ${testCases.length} test cases passed! +20 COINS EARNED!`,
+          });
+        } else if (alreadyClaimed || rewardRes.reason === 'already_rewarded') {
+          setChallengeResult({
+            success: true,
+            msg: `✓ All ${testCases.length} test cases passed! (Reward already claimed for this problem)`,
+          });
+        } else {
+          setChallengeResult({
+            success: true,
+            msg: `✓ All ${testCases.length} test cases passed!`,
+          });
+        }
+      } else {
+        triggerGoblinDefeatEffects({ targetSelector: '.lab-topic-page' });
+        setChallengeResult({
+          success: false,
+          msg: `Tests failed (${passedCount}/${testCases.length} passed). ${firstFailure || ''}`,
+        });
+      }
+    } catch (e) {
+      triggerGoblinDefeatEffects({ targetSelector: '.lab-topic-page' });
+      setChallengeResult({ success: false, msg: `Runtime Error: ${e.message}` });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -172,10 +278,17 @@ export default function LogicLabTopic() {
                   />
                 </div>
 
-                {/* Actions: [ RUN CODE ] [ SHOW SOLUTION ] [ HINT ] */}
+                {/* Actions: [ RUN CODE ] [ SUBMIT SOLUTION ] [ SHOW SOLUTION ] [ HINT ] */}
                 <div className="lab-challenge-actions-row">
-                  <button className="btn btn-primary btn-sm" onClick={runChallenge}>
+                  <button className="btn btn-outline btn-sm" onClick={runChallenge}>
                     Run Code
+                  </button>
+                  <button
+                    className="btn btn-primary btn-sm lab-submit-btn"
+                    onClick={submitChallenge}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Evaluating...' : 'Submit Solution'}
                   </button>
                   <button
                     className="btn btn-ghost btn-sm"

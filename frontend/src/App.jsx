@@ -23,6 +23,7 @@ import Community from './pages/Community/Community';
 import PostDetail from './pages/Community/PostDetail';
 import CreatePost from './pages/Community/CreatePost';
 import Footer from './components/Footer/Footer';
+import CoinRewardToast from './components/UI/CoinRewardToast';
 import { MultiplayerProvider } from './context/MultiplayerContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -38,6 +39,7 @@ function Layout({ children }) {
 
   return (
     <>
+      <CoinRewardToast />
       {!fullscreen && <Navbar />}
       {children}
       {!fullscreen && <Footer />}
